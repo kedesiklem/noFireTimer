@@ -1,5 +1,4 @@
-dofile_once( "mods/noFireTimer/files/lib/helper.lua");
-dofile_once( "mods/noFireTimer/files/lib/variables.lua");
+local time = dofile_once("mods/noFireTimer/files/scripts/timer.lua")
 
 function OnPlayerSpawned( player_entity )
     EntityLoad( "mods/noFireTimer/files/gui/container.xml" );
@@ -19,3 +18,11 @@ function OnPlayerSpawned( player_entity )
     end
 
 end
+
+function OnPlayerDied( player_entity )
+    time.saveBestTime()
+end
+
+-- function OnPausedChanged(is_paused, is_inventory_pause)
+--     time.saveBestTime()
+-- end
