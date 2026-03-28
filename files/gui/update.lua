@@ -17,13 +17,15 @@ GuiStartFrame( gui );
 local screen_width, screen_height = GuiGetScreenDimensions( gui );
 
 local gokiui = dofile_once( "mods/noFireTimer/files/mod_settings.lua" )( gui, 2, "noFireTimer", {
-    { key="visibility",   label="Visibility", default=1.0,  type="range",
+    { key="visibility",      label="Visibility",       default=1.0,  type="range",
       type_data={ min=0.01, max=1.0, text_callback=function(v) return math.floor(v*100).."%"; end } },
-    { key="gui_x",        label="X",          default=24,   type="range",
+    { key="gui_x",           label="X",                default=24,   type="range",
       type_data={ min=0, max=screen_width,  value_callback=function(v) return math.floor(v+0.5); end } },
-    { key="gui_y",        label="Y",          default=55,   type="range",
+    { key="gui_y",           label="Y",                default=55,   type="range",
       type_data={ min=0, max=screen_height, value_callback=function(v) return math.floor(v+0.5); end } },
-    { key="label_string", label="Label",      default="No fire: ", type="input" },
+    { key="label_string",    label="Label",            default="Time not on fire: ",   type="input" },
+    { key="show_best_time",  label="Show Best Time",   default=true,          type="boolean" },
+    { key="best_label_string", label="Best Label",     default="Best: ",      type="input" },
 } );
 
 local next_id  = gokiui.next_id;
@@ -77,12 +79,19 @@ function do_gui()
     local gx = ModSettingGet( "noFireTimer.gui_x" );
     local gy = ModSettingGet( "noFireTimer.gui_y" );
 
-    GuiLayoutBeginVertical( gui, 0, 0 );
-        GuiColorSetForNextWidget( gui, 1.0, 1.0, 1.0, ModSettingGet( "noFireTimer.visibility" ) );
-        if GuiButton( gui, next_id(), gx, gy, text ) then
-            is_panel_open = not is_panel_open;
-        end
-    GuiLayoutEnd( gui );
+    GuiColorSetForNextWidget( gui, 1.0, 1.0, 1.0, ModSettingGet( "noFireTimer.visibility" ) );
+    if GuiButton( gui, next_id(), gx, gy, text ) then
+        is_panel_open = not is_panel_open;
+    end
+    if ModSettingGet( "noFireTimer.show_best_time" ) then
+        local best = tonumber( ModSettingGet( "noFireTimer.best_time" ) ) or 0;
+        local best_text = safe_string_format( "%s%s",
+            ModSettingGet( "noFireTimer.best_label_string" ),
+            format_timer( best )
+        );
+        GuiColorSetForNextWidget( gui, 0.8, 0.8, 0.8, ModSettingGet( "noFireTimer.visibility" ) );
+        GuiText( gui, gx, gy + 8, best_text );
+    end
 end
 
 if gui then
