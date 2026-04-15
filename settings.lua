@@ -1,6 +1,6 @@
 dofile_once("data/scripts/lib/mod_settings.lua")
 
-local mod_version = "1.2.0"
+local mod_version = "1.2.1"
 local mod_id  = "noFireTimer"
 local gui_id  = 99001
 local function id() gui_id = gui_id + 1; return gui_id; end
