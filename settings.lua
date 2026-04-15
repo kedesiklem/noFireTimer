@@ -1,5 +1,6 @@
 dofile_once("data/scripts/lib/mod_settings.lua")
 
+local mod_version = "1.2.0"
 local mod_id  = "noFireTimer"
 local gui_id  = 99001
 local function id() gui_id = gui_id + 1; return gui_id; end
@@ -25,19 +26,35 @@ end
 
 local mod_settings = {
     {
+        category_id = "noFireTimer_version",
+        ui_name = "Version: " .. mod_version,
+        foldable = false,
+        _folded = true,
+        settings = {},
+    },
+    {
         category_id = "records",
         ui_name     = "Records",
         foldable    = false,
         settings    = {
             {
-                id          = "reset_best_time",
+                id          = "reset_bestg_time",
                 not_setting = true,
                 ui_fn       = function(_, gui, _, _, setting)
-                    if button(gui, mod_setting_group_x_offset, "Reset best time", {1, 0.4, 0.4}) then
-                        ModSettingRemove(mod_id .. ".best_time")
+                    if button(gui, mod_setting_group_x_offset, "Reset best global time", {1, 0.4, 0.4}) then
+                        ModSettingRemove(mod_id .. ".bestg_time")
                     end
                 end,
             },
+            {
+                id          = "reset_death_by_fire_count",
+                not_setting = true,
+                ui_fn       = function(_, gui, _, _, setting)
+                    if button(gui, mod_setting_group_x_offset, "Reset death by fire counter", {1, 0.4, 0.4}) then
+                        ModSettingRemove(mod_id .. ".death_by_fire_count")
+                    end
+                end,
+            }
         },
     },
 }

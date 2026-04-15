@@ -24,8 +24,12 @@ local gokiui = dofile_once( "mods/noFireTimer/files/mod_settings.lua" )( gui, 2,
     { key="gui_y",           label="Y",                default=55,   type="range",
       type_data={ min=0, max=screen_height, value_callback=function(v) return math.floor(v+0.5); end } },
     { key="label_string",    label="Label",            default="Time not on fire: ",   type="input" },
-    { key="show_best_time",  label="Show Best Time",   default=true,          type="boolean" },
-    { key="best_label_string", label="Best Label",     default="Best: ",      type="input" },
+    { key="show_bestr_time",  label="Show Best Run Time",   default=true,          type="boolean" },
+    { key="bestr_label_string", label="Best Run Label",     default="Best [Run]: ",      type="input" },
+    { key="show_bestg_time",  label="Show Best Global Time",   default=true,          type="boolean" },
+    { key="bestg_label_string", label="Best Global Label",     default="Best [Global]: ",      type="input" },
+    { key="show_death_by_fire_count",  label="Show Best Time",   default=true,          type="boolean" },
+    { key="death_by_fire_count_string", label="Death Label",     default="Death by fire : ",      type="input" },
 } );
 
 local next_id  = gokiui.next_id;
@@ -41,6 +45,11 @@ local function format_timer( seconds )
     return string.format( "%02d:%02d.%02d", m, s, cs );
 end
 
+local function format_number( number )
+    if number == nil then number = 0; end
+    return string.format( "%d", number );
+end
+
 local is_panel_open = false;
 
 function do_gui()
@@ -54,7 +63,7 @@ function do_gui()
         GuiOptionsAdd( gui, GUI_OPTION.NoPositionTween );
         GuiLayoutBeginVertical( gui, 5, 15 );
             if is_panel_open then
-                GuiBeginScrollContainer( gui, next_id(), 0, 0, 300, 110, false );
+                GuiBeginScrollContainer( gui, next_id(), 0, 0, 350, 110, false );
                     GuiLayoutBeginVertical( gui, 0, 0 );
                         GuiColorSetForNextWidget( gui, 0.5, 0.5, 0.5, 1.0 );
                         GuiOptionsAddForNextWidget( gui, GUI_OPTION.TextRichRendering );
@@ -83,14 +92,40 @@ function do_gui()
     if GuiButton( gui, next_id(), gx, gy, text ) then
         is_panel_open = not is_panel_open;
     end
-    if ModSettingGet( "noFireTimer.show_best_time" ) then
-        local best = tonumber( ModSettingGet( "noFireTimer.best_time" ) ) or 0;
+    if ModSettingGet( "noFireTimer.show_bestg_time" ) then
+        local best = tonumber( ModSettingGet( "noFireTimer.bestg_time" ) ) or 0;
         local best_text = safe_string_format( "%s%s",
-            ModSettingGet( "noFireTimer.best_label_string" ),
+            ModSettingGet( "noFireTimer.bestg_label_string" ),
             format_timer( best )
         );
         GuiColorSetForNextWidget( gui, 0.8, 0.8, 0.8, ModSettingGet( "noFireTimer.visibility" ) );
-        GuiText( gui, gx, gy + 8, best_text );
+        
+        gy = gy + 8
+        GuiText( gui, gx, gy, best_text );
+    end
+    if ModSettingGet( "noFireTimer.show_bestr_time" ) then
+        local best = tonumber( ModSettingGet( "noFireTimer.bestr_time" ) ) or 0;
+        local best_text = safe_string_format( "%s%s",
+            ModSettingGet( "noFireTimer.bestr_label_string" ),
+            format_timer( best )
+        );
+        GuiColorSetForNextWidget( gui, 0.8, 0.8, 0.8, ModSettingGet( "noFireTimer.visibility" ) );
+        
+        gy = gy + 8
+        GuiText( gui, gx, gy, best_text );
+    end
+    
+
+    if ModSettingGet( "noFireTimer.show_death_by_fire_count" ) then
+        local best = tonumber( ModSettingGet( "noFireTimer.death_by_fire_count" ) ) or 0;
+        local best_text = safe_string_format( "%s%s",
+            ModSettingGet( "noFireTimer.death_by_fire_count_string" ),
+            format_number( best )
+        );
+        GuiColorSetForNextWidget( gui, 0.8, 0.8, 0.8, ModSettingGet( "noFireTimer.visibility" ) );
+        
+        gy = gy + 8
+        GuiText( gui, gx, gy, best_text );
     end
 end
 
